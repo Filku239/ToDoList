@@ -7,6 +7,22 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+nav h2{
+  color: #0077cc;
+  font: bold;
+  font-size: 46px;
+  text-align: center;
+  padding: 20px;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+.container {
+    color: #0077cc;
+    font: bold;
+    text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
 a {
   color: #0077cc;
 }
@@ -32,11 +48,6 @@ a {
 
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
 }
 
 .footer {

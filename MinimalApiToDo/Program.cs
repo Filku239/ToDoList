@@ -18,6 +18,7 @@ var listToDo = new List<TodoItem>();
 
 app.MapPost("/todo", (TodoItem todoItem) =>
 {
+    todoItem.Id = listToDo.Any() ? listToDo.Max(x => x.Id) + 1 : 1;
     listToDo.Add(todoItem);
     return Results.Created($"/todo/{todoItem.Id}", todoItem);
 });

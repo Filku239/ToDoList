@@ -1,8 +1,72 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
+@model RazorPagesToDo.Pages.IndexModel
 
 <div class="text-center">
+    <form method="post">
+    <label asp-for="Name">Add new task</label>
+    <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
+    <button type="submit">Add</button>
+</form>
+
+
+    <ul>
+        @foreach (var todo in Model.Todos)
+        {
+            <li>@todo.Name</li>
+        }
+    </ul>
 </div>
+
+
+<style>
+  form {
+    max-width: 300px;
+    margin: 20px auto;
+    padding: 15px;
+    border: 2px solid #1E90FF;
+    border-radius: 8px;
+    background-color: #e6f0ff;
+    font-family: Arial, sans-serif;
+  }
+
+  label {
+    color: #1E90FF;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #1E90FF;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    color: #003366;
+    background-color: #f0f8ff;
+    transition: border-color 0.3s;
+  }
+
+  input[type="text"]:focus {
+    border-color: #0047b3;
+  }
+
+  button {
+    margin-top: 12px;
+    width: 100%;
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #0047b3;
+  }
+</style>
