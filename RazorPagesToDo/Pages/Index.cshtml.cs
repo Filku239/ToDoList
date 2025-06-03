@@ -57,4 +57,29 @@ public class IndexModel : PageModel
 
         return RedirectToPage();
     }
+
+
+    public async Task<IActionResult> OnPostDeleteAsync(int id)
+    {
+        var client = _httpClientFactory.CreateClient();
+
+        var response = await client.DeleteAsync($"http://localhost:5215/todo/{id}");
+        response.EnsureSuccessStatusCode();
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostToggleCompleteAsync(int id, bool isComplete)
+{
+    var client = _httpClientFactory.CreateClient();
+
+    var todoUpdate = new { IsComplete = isComplete };
+
+    var response = await client.PutAsJsonAsync($"http://localhost:5215/todo/{id}", todoUpdate);
+    response.EnsureSuccessStatusCode();
+
+    return RedirectToPage();
+}
+
+
 }
