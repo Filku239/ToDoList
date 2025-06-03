@@ -2,71 +2,203 @@
 @model RazorPagesToDo.Pages.IndexModel
 
 <div class="text-center">
-    <form method="post">
-    <label asp-for="Name">Add new task</label>
-    <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
-    <button type="submit">Add</button>
-</form>
+    <button id="toggleFormBtn" class="toggle-btn">Open form</button>
 
+    <div id="formWrapper" class="collapsible collapsed">
+        <form method="post">
+            <label asp-for="Name">Add new task</label>
+            <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
+            <button type="submit">Add</button>
+        </form>
+    </div>
 
-    <ul>
+    <div class="taskArea">
         @foreach (var todo in Model.Todos)
         {
-            <li>@todo.Name</li>
+            <div class="item">
+                <input type="checkbox" name="isComplete" class="task-check" @(todo.IsComplete ? "checked" : "") />
+                <span>@todo.Name</span>
+            </div>
         }
-    </ul>
+    </div>
 </div>
 
-
 <style>
+  body {
+    background: linear-gradient(to bottom right, #fafdff, #e6f2ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+  }
+
   form {
-    max-width: 300px;
-    margin: 20px auto;
-    padding: 15px;
+    width: 100%;
+    max-width: 360px;
+    padding: 20px;
     border: 2px solid #1E90FF;
-    border-radius: 8px;
-    background-color: #e6f0ff;
-    font-family: Arial, sans-serif;
+    border-radius: 12px;
+    background-color: #f0f8ff;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+    transition: 0.3s ease;
   }
 
   label {
     color: #1E90FF;
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 8px;
     display: block;
-    margin-bottom: 6px;
+    font-size: 18px;
   }
 
   input[type="text"] {
     width: 100%;
-    padding: 8px;
+    padding: 10px 14px;
     border: 2px solid #1E90FF;
-    border-radius: 5px;
-    outline: none;
-    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: white;
     color: #003366;
-    background-color: #f0f8ff;
-    transition: border-color 0.3s;
+    font-size: 16px;
+    transition: 0.3s ease;
   }
 
   input[type="text"]:focus {
     border-color: #0047b3;
+    box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
   }
 
   button {
-    margin-top: 12px;
+    margin-top: 14px;
     width: 100%;
     background-color: #1E90FF;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
+    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.3s ease;
   }
 
   button:hover {
     background-color: #0047b3;
+    transform: translateY(-2px);
+  }
+
+  .toggle-btn {
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+  }
+
+  .toggle-btn:hover {
+    background-color: #0047b3;
+    transform: translateY(-2px);
+  }
+
+  .collapsible {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.3s ease;
+  }
+
+  .collapsible.expanded {
+    max-height: 500px;
+    opacity: 1;
+    padding-top: 10px;
+  }
+
+  .taskArea {
+    margin: 40px auto;
+    width: 100%;
+    max-width: 600px;
+    padding: 25px;
+    border: 2px solid #1E90FF;
+    border-radius: 12px;
+    background-color: #f7fbff;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 25px;
+    background: white;
+    border: 2px solid #1E90FF;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(30, 144, 255, 0.08);
+    font-size: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(30, 144, 255, 0.2);
+  }
+
+  .item.completed {
+    background-color: #dbeeff;
+    border-color: #1E90FF;
+    box-shadow: 0 6px 14px rgba(30, 144, 255, 0.15);
+    transition: background-color 0.3s ease;
+  }
+
+  .item input[type="checkbox"] {
+    transform: scale(1.4);
+    accent-color: #1E90FF;
+    cursor: pointer;
+  }
+
+  .item span {
+    color: #003366;
+    font-size: 18px;
+    flex: 1;
+    word-break: break-word;
   }
 </style>
+
+<script>
+  const toggleBtn = document.getElementById('toggleFormBtn');
+  const formWrapper = document.getElementById('formWrapper');
+
+  toggleBtn.addEventListener('click', () => {
+    formWrapper.classList.toggle('collapsed');
+    formWrapper.classList.toggle('expanded');
+    toggleBtn.textContent = formWrapper.classList.contains('expanded')
+      ? 'Hide form'
+      : 'Open form';
+  });
+
+  document.querySelectorAll('.task-check').forEach(checkbox => {
+    const item = checkbox.closest('.item');
+
+    const toggleCompleted = () => {
+      item.classList.toggle('completed', checkbox.checked);
+    };
+
+    checkbox.addEventListener('change', toggleCompleted);
+
+    toggleCompleted();
+  });
+</script>
