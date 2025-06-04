@@ -6,38 +6,34 @@
 
     <div id="formWrapper" class="collapsible collapsed">
         <form method="post" class="add-form">
-    <label asp-for="Name">Add new task</label>
-    <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
-    <button type="submit">Add</button>
-</form>
-
+            <label asp-for="Name">Add new task</label>
+            <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
+            <button type="submit">Add</button>
+        </form>
     </div>
 
     <div class="taskArea">
         @foreach (var todo in Model.Todos)
-{
-    <div class="item @(todo.IsComplete ? "completed" : "")">
-        <form method="post" asp-page-handler="ToggleComplete" asp-route-id="@todo.Id" class="complete-form" style="margin:0;">
-    <input type="hidden" name="isComplete" value="false" />
-    <input
-        type="checkbox"
-        name="isComplete"
-        class="task-check"
-        onchange="this.form.submit()"
-        value="true"
-        @(todo.IsComplete ? "checked" : "") />
-</form>
+        {
+            <div class="item @(todo.IsComplete ? "completed" : "")">
+                <form method="post" asp-page-handler="ToggleComplete" asp-route-id="@todo.Id" class="complete-form" style="margin:0; display:flex; align-items:center;">
+                    <input type="hidden" name="isComplete" value="false" />
+                    <input
+                        type="checkbox"
+                        name="isComplete"
+                        class="task-check"
+                        onchange="this.form.submit()"
+                        value="true"
+                        @(todo.IsComplete ? "checked" : "") />
+                </form>
 
-        <span>@todo.Name</span>
+                <span>@todo.Name</span>
 
-        <form method="post" asp-page-handler="Delete" asp-route-id="@todo.Id" class="delete-form">
-            <button type="submit" class="delete-btn" title="Delete">&#x2715;</button>
-        </form>
-    </div>
-}
-
-
-
+                <form method="post" asp-page-handler="Delete" asp-route-id="@todo.Id" class="delete-form">
+                    <button type="submit" class="delete-btn" title="Delete">&#x2715;</button>
+                </form>
+            </div>
+        }
     </div>
 </div>
 
@@ -45,27 +41,6 @@
   body {
   background: linear-gradient(to bottom right, #fafdff, #e6f2ff);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.delete-form {
-  margin: 0;
-  align-self: center;
-}
-
-.delete-btn {
-  background: transparent;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  font-size: 20px;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  width: 36px;
-  line-height: 1;
 }
 
 .text-center {
@@ -164,7 +139,8 @@ button:hover {
 .taskArea {
   margin: 40px auto;
   width: 100%;
-  max-width: 600px;
+  min-height: 500px;
+  max-width: 800px;
   padding: 25px;
   border: 2px solid #1E90FF;
   border-radius: 12px;
@@ -180,6 +156,7 @@ button:hover {
 .item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 16px 20px;
   background: white;
@@ -202,19 +179,56 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
+.item span {
+  flex: 1;
+  color: #003366;
+  font-size: 18px;
+  word-break: break-word;
+  margin-left: 10px;
+}
+
+.complete-form {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
 .item input[type="checkbox"] {
   transform: scale(1.3);
   accent-color: #1E90FF;
   cursor: pointer;
 }
 
-.item span {
-  color: #003366;
-  font-size: 18px;
-  flex: 1;
-  align-self: center;
-  word-break: break-word;
+.delete-form {
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-size: 22px;
+  padding: 6px;
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  line-height: 1;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.delete-btn:hover {
+  color: #d9534f;
+  background-color: rgba(217, 83, 79, 0.1);
+}
+
 
 </style>
 

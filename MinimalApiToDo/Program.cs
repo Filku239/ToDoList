@@ -1,4 +1,10 @@
 using MinimalApiToDo.Models;
+using Microsoft.EntityFrameworkCore;
+using MinimalApiToDo.Data;
+using DotNetEnv;
+
+Env.Load();
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,49 +18,49 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddDbContext<TodoDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+
 var app = builder.Build();
 
-var listToDo = new List<TodoItem>();
-
-app.MapPost("/todo", (TodoItem todoItem) =>
+app.MapPost("/todo", async (TodoItem todoItem, TodoDbContext db) =>
 {
-    todoItem.Id = listToDo.Any() ? listToDo.Max(x => x.Id) + 1 : 1;
-    listToDo.Add(todoItem);
+    db.TodoItems.Add(todoItem);
+    await db.SaveChangesAsync();
     return Results.Created($"/todo/{todoItem.Id}", todoItem);
 });
 
-app.MapGet("/todo", () => listToDo);
-
-app.MapGet("/todo/{id}", (int id) =>
+app.MapGet("/todo", async (TodoDbContext db) =>
 {
-    var todoItem = listToDo.FirstOrDefault(x => x.Id == id);
-    return todoItem is null ? Results.NotFound() : Results.Ok(todoItem);
+    var todoItems = await db.TodoItems.ToListAsync();
+    return todoItems;
 });
 
-app.MapDelete("todo/{id}", (int id) =>
+app.MapGet("/todo/{id}", (int id,TodoDbContext db) =>
 {
-    var todoItem = listToDo.FirstOrDefault(x => x.Id == id);
-    if (todoItem is null)
-    {
-        return Results.NotFound();
-    }
-
-    listToDo.Remove(todoItem);
-    return Results.NoContent();
+    var todoItem = db.TodoItems.FirstOrDefault(x => x.Id == id);    
+    return todoItem;
 });
 
-app.MapPut("/todo/{id}", (int id) =>
+app.MapDelete("todo/{id}", (int id,TodoDbContext db) =>
 {
-    var todoItem = listToDo.FirstOrDefault(x => x.Id == id);
-    if (todoItem is null)
-    {
-        return Results.NotFound();
-    }
+    var todoItem = db.TodoItems.FirstOrDefault(x => x.Id == id);
+    db.TodoItems.Remove(todoItem);
+    db.SaveChanges();
+    return Results.Ok();
+});
 
+app.MapPut("/todo/{id}", (int id,TodoDbContext db) =>
+{
+    var todoItem = db.TodoItems.FirstOrDefault(x => x.Id == id);
     todoItem.IsComplete = !todoItem.IsComplete;
-    return Results.Ok(todoItem);
+    db.SaveChanges();
+    return Results.Ok();
 });
 
 app.UseCors("AllowAll");
+
 
 app.Run();

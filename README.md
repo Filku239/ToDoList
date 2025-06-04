@@ -5,7 +5,7 @@ First project using ASP.NET Core Minimal API and Razor Pages. This application i
 - ✅ ASP.NET Core 8 (Minimal API)
 - ✅ Razor Pages – Frontend rendering
 - ✅ C# 12
-- ❌ No database – data stored in memory (resets on app restart)
+- ✅ MS SQL Server – data persisted in a SQL databaserestart)
 
 ## Features
 - Add tasks
