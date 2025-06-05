@@ -8,6 +8,8 @@
         <form method="post" class="add-form">
             <label asp-for="Name">Add new task</label>
             <input asp-for="Name" id="name" name="name" type="text" placeholder="Enter task" />
+            <label asp-for="DueDate">Due date</label>
+            <input asp-for="DueDate" type="date" id="dateInput" class="dateInput" />
             <button type="submit">Add</button>
         </form>
     </div>
@@ -16,7 +18,7 @@
         @foreach (var todo in Model.Todos)
         {
             <div class="item @(todo.IsComplete ? "completed" : "")">
-                <form method="post" asp-page-handler="ToggleComplete" asp-route-id="@todo.Id" class="complete-form" style="margin:0; display:flex; align-items:center;">
+                <form method="post" asp-page-handler="ToggleComplete" asp-route-id="@todo.Id" class="complete-form">
                     <input type="hidden" name="isComplete" value="false" />
                     <input
                         type="checkbox"
@@ -27,8 +29,13 @@
                         @(todo.IsComplete ? "checked" : "") />
                 </form>
 
-                <span>@todo.Name</span>
-
+      <span>
+    @todo.Name 
+    @if (todo.DueDate.HasValue)
+    {
+        @($"- {todo.DueDate.Value.ToString("dd.MM.yyyy")}")
+    }
+</span>
                 <form method="post" asp-page-handler="Delete" asp-route-id="@todo.Id" class="delete-form">
                     <button type="submit" class="delete-btn" title="Delete">&#x2715;</button>
                 </form>
@@ -39,197 +46,210 @@
 
 <style>
   body {
-  background: linear-gradient(to bottom right, #fafdff, #e6f2ff);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+    background: linear-gradient(to bottom right, #fafdff, #e6f2ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
 
-.text-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 40px;
-}
+  .text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+  }
 
-.add-form {
-  width: 100%;
-  max-width: 360px;
-  padding: 20px;
-  border: 2px solid #1E90FF;
-  border-radius: 12px;
-  background-color: #f0f8ff;
-  box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
-  transition: 0.3s ease;
-}
+  .add-form {
+    width: 100%;
+    max-width: 360px;
+    padding: 20px;
+    border: 2px solid #1E90FF;
+    border-radius: 12px;
+    background-color: #f0f8ff;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+    transition: 0.3s ease;
+  }
 
-label {
-  color: #1E90FF;
-  font-weight: 600;
-  margin-bottom: 8px;
-  display: block;
-  font-size: 20px;
-}
+  .dateInput {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #1E90FF;
+    border-radius: 8px;
+    background-color: white;
+    color: #003366;
+    font-size: 16px;
+    transition: 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    line-height: normal;
+  }
 
-input[type="text"] {
-  width: 100%;
-  padding: 10px 14px;
-  border: 2px solid #1E90FF;
-  border-radius: 8px;
-  background-color: white;
-  color: #003366;
-  font-size: 16px;
-  transition: 0.3s ease;
-}
+  label {
+    color: #1E90FF;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 20px;
+    margin-top: 10px;
 
-input[type="text"]:focus {
-  border-color: #0047b3;
-  box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
-}
+  }
 
-button {
-  margin-top: 14px;
-  width: 100%;
-  background-color: #1E90FF;
-  color: white;
-  border: none;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #1E90FF;
+    border-radius: 8px;
+    background-color: white;
+    color: #003366;
+    font-size: 16px;
+    transition: 0.3s ease;
+  }
 
-button:hover {
-  background-color: #0047b3;
-  transform: translateY(-2px);
-}
+  input[type="text"]:focus {
+    border-color: #0047b3;
+    box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
+  }
 
-.toggle-btn {
-  background-color: #1E90FF;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
-}
+  button {
+    margin-top: 14px;
+    width: 100%;
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
 
-.toggle-btn:hover {
-  background-color: #0047b3;
-  transform: translateY(-2px);
-}
+  button:hover {
+    background-color: #0047b3;
+    transform: translateY(-2px);
+  }
 
-.collapsible {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.3s ease;
-}
+  .toggle-btn {
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+  }
 
-.collapsible.expanded {
-  max-height: 500px;
-  opacity: 1;
-  padding-top: 10px;
-}
+  .toggle-btn:hover {
+    background-color: #0047b3;
+    transform: translateY(-2px);
+  }
 
-.taskArea {
-  margin: 40px auto;
-  width: 100%;
-  min-height: 500px;
-  max-width: 800px;
-  padding: 25px;
-  border: 2px solid #1E90FF;
-  border-radius: 12px;
-  background-color: #f7fbff;
-  box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-height: 500px;
-  overflow-y: auto;
-}
+  .collapsible {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.3s ease;
+  }
 
-.item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 20px;
-  background: white;
-  border: 2px solid #1E90FF;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(30, 144, 255, 0.08);
-  font-size: 18px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  .collapsible.expanded {
+    max-height: 500px;
+    opacity: 1;
+    padding-top: 10px;
+  }
 
-.item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(30, 144, 255, 0.2);
-}
+  .taskArea {
+    margin: 40px auto;
+    width: 100%;
+    min-height: 500px;
+    max-width: 800px;
+    padding: 25px;
+    border: 2px solid #1E90FF;
+    border-radius: 12px;
+    background-color: #f7fbff;
+    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
 
-.item.completed {
-  background-color: #dbeeff;
-  border-color: #1E90FF;
-  box-shadow: 0 6px 14px rgba(30, 144, 255, 0.15);
-  transition: background-color 0.3s ease;
-}
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border: 2px solid #1E90FF;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(30, 144, 255, 0.08);
+    font-size: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
 
-.item span {
-  flex: 1;
-  color: #003366;
-  font-size: 18px;
-  word-break: break-word;
-  margin-left: 10px;
-}
+  .item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(30, 144, 255, 0.2);
+  }
 
-.complete-form {
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
+  .item.completed {
+    background-color: #dbeeff;
+    border-color: #1E90FF;
+    box-shadow: 0 6px 14px rgba(30, 144, 255, 0.15);
+    transition: background-color 0.3s ease;
+  }
 
-.item input[type="checkbox"] {
-  transform: scale(1.3);
-  accent-color: #1E90FF;
-  cursor: pointer;
-}
+  .item span {
+    flex: 1;
+    color: #003366;
+    font-size: 18px;
+    word-break: break-word;
+    margin-left: 10px;
+  }
 
-.delete-form {
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
+  .complete-form {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
 
-.delete-btn {
-  background: transparent;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  font-size: 22px;
-  padding: 6px;
-  margin-top: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  width: 36px;
-  line-height: 1;
-  border-radius: 8px;
-  user-select: none;
-}
+  .item input[type="checkbox"] {
+    transform: scale(1.3);
+    accent-color: #1E90FF;
+    cursor: pointer;
+  }
 
-.delete-btn:hover {
-  color: #d9534f;
-  background-color: rgba(217, 83, 79, 0.1);
-}
+  .delete-form {
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
 
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    font-size: 22px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    border-radius: 8px;
+    user-select: none;
+  }
 
+  .delete-btn:hover {
+    color: #d9534f;
+    background-color: rgba(217, 83, 79, 0.1);
+  }
 </style>
 
 <script>
@@ -239,9 +259,7 @@ button:hover {
   toggleBtn.addEventListener('click', () => {
     formWrapper.classList.toggle('collapsed');
     formWrapper.classList.toggle('expanded');
-    toggleBtn.textContent = formWrapper.classList.contains('expanded')
-      ? 'Hide form'
-      : 'Open form';
+    toggleBtn.textContent = formWrapper.classList.contains('expanded') ? 'Hide form' : 'Open form';
   });
 
   document.querySelectorAll('.task-check').forEach(checkbox => {
@@ -252,7 +270,16 @@ button:hover {
     };
 
     checkbox.addEventListener('change', toggleCompleted);
-
     toggleCompleted();
   });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('dateInput');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.value = today;
+    }
+  });
 </script>
+
+

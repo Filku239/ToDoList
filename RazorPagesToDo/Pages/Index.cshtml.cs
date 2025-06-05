@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-
+using RazorPagesToDo.Models;
 
 namespace RazorPagesToDo.Pages;
 
@@ -14,10 +14,13 @@ public class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public List<Todo> Todos { get; set; } = new();
+    public List<TodoItem> Todos { get; set; } = new();
 
     [BindProperty]
     public string Name { get; set; }
+
+    [BindProperty]
+    public DateOnly? DueDate { get; set; }
 
     public IndexModel(ILogger<IndexModel> logger, IHttpClientFactory httpClientFactory)
     {
@@ -34,7 +37,7 @@ public class IndexModel : PageModel
 
         var result = await response.Content.ReadAsStringAsync();
 
-        Todos = JsonConvert.DeserializeObject<List<Todo>>(result);
+        Todos = JsonConvert.DeserializeObject<List<TodoItem>>(result);
     }
 
     public async Task<IActionResult> OnPost()
@@ -46,10 +49,11 @@ public class IndexModel : PageModel
 
         var client = _httpClientFactory.CreateClient();
 
-        var newTask = new Todo
+        var newTask = new TodoItem
         {
             Name = Name,
-            IsComplete = false
+            IsComplete = false,
+            DueDate = DueDate
         };
 
         var response = await client.PostAsJsonAsync("http://localhost:5215/todo", newTask);

@@ -62,5 +62,4 @@ app.MapPut("/todo/{id}", (int id,TodoDbContext db) =>
 
 app.UseCors("AllowAll");
 
-
 app.Run();
