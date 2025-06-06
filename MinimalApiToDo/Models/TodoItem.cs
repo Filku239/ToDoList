@@ -7,5 +7,7 @@ namespace MinimalApiToDo.Models
         public bool IsComplete { get; set; }
 
         public DateOnly? DueDate { get; set; }
+
+        public string Category { get; set; }
     }
 }

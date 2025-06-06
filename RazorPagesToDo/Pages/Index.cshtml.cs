@@ -22,6 +22,9 @@ public class IndexModel : PageModel
     [BindProperty]
     public DateOnly? DueDate { get; set; }
 
+    [BindProperty]
+    public string Category { get; set; }
+
     public IndexModel(ILogger<IndexModel> logger, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
@@ -53,7 +56,8 @@ public class IndexModel : PageModel
         {
             Name = Name,
             IsComplete = false,
-            DueDate = DueDate
+            DueDate = DueDate,
+            Category = Category
         };
 
         var response = await client.PostAsJsonAsync("http://localhost:5215/todo", newTask);
@@ -74,16 +78,16 @@ public class IndexModel : PageModel
     }
 
     public async Task<IActionResult> OnPostToggleCompleteAsync(int id, bool isComplete)
-{
-    var client = _httpClientFactory.CreateClient();
+    {
+        var client = _httpClientFactory.CreateClient();
 
-    var todoUpdate = new { IsComplete = isComplete };
+        var todoUpdate = new { IsComplete = isComplete };
 
-    var response = await client.PutAsJsonAsync($"http://localhost:5215/todo/{id}", todoUpdate);
-    response.EnsureSuccessStatusCode();
+        var response = await client.PutAsJsonAsync($"http://localhost:5215/todo/{id}", todoUpdate);
+        response.EnsureSuccessStatusCode();
 
-    return RedirectToPage();
-}
+        return RedirectToPage();
+    }
 
 
 }
